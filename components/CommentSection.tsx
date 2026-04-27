@@ -3,22 +3,25 @@
 import { useState, useEffect, useTransition } from 'react'
 import { Avatar } from '@/components/ui/Avatar'
 import { Button } from '@/components/ui/Button'
-import { addComment, deleteComment, getComments, CommentWithUser } from '@/actions/comments'
+
+interface Comment {
+  id: string
+  content: string
+  createdAt: string
+  userId: string
+  user: { id: string; name: string | null; image: string | null }
+}
 
 interface CommentSectionProps {
   postId: string
-  postAuthorId: string
-  initialComments: CommentWithUser[]
-  currentUserId?: string
+  currentUserId: string | null
 }
 
 export function CommentSection({
   postId,
-  postAuthorId,
-  initialComments,
   currentUserId,
 }: CommentSectionProps) {
-  const [comments, setComments] = useState<CommentWithUser[]>(initialComments)
+  const [comments, setComments] = useState<Comment[]>([])
   const [newComment, setNewComment] = useState('')
   const [showAll, setShowAll] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -26,38 +29,36 @@ export function CommentSection({
 
   // Fetch comments on mount
   useEffect(() => {
-    if (initialComments.length === 0) {
-      setIsLoading(true)
-      getComments(postId)
-        .then((fetchedComments) => {
-          setComments(fetchedComments)
-        })
-        .catch(() => {
-          // Silent fail - comments will be empty
-        })
-        .finally(() => {
-          setIsLoading(false)
-        })
-    }
-  }, [postId, initialComments.length])
+    setIsLoading(true)
+    fetch(`/api/posts/${postId}/comments`)
+      .then((res) => res.json())
+      .then((data) => {
+        setComments(data.comments || [])
+      })
+      .catch(() => {
+        // Silent fail - comments will be empty
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
+  }, [postId])
 
   const handleAddComment = (e: React.FormEvent) => {
     e.preventDefault()
 
     const trimmedComment = newComment.trim()
-    if (!trimmedComment) return
+    if (!trimmedComment || !currentUserId) return
 
     // Optimistic update
-    const optimisticComment: CommentWithUser = {
+    const optimisticComment: Comment = {
       id: `temp-${Date.now()}`,
       content: trimmedComment,
-      createdAt: new Date(),
-      userId: currentUserId || '',
+      createdAt: new Date().toISOString(),
+      userId: currentUserId,
       user: {
-        id: currentUserId || '',
+        id: currentUserId,
         name: 'You',
-        email: '',
-        avatarUrl: null,
+        image: null,
       },
     }
 
@@ -66,10 +67,20 @@ export function CommentSection({
 
     startTransition(async () => {
       try {
-        await addComment(postId, trimmedComment)
+        const response = await fetch(`/api/posts/${postId}/comments`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: trimmedComment }),
+        })
+
+        if (!response.ok) {
+          throw new Error('Failed to add comment')
+        }
+
         // Re-fetch to get the real comment with proper ID
-        const updatedComments = await getComments(postId)
-        setComments(updatedComments)
+        const refreshResponse = await fetch(`/api/posts/${postId}/comments`)
+        const data = await refreshResponse.json()
+        setComments(data.comments || [])
       } catch {
         // Revert optimistic update on error
         setComments((prev) => prev.filter((c) => c.id !== optimisticComment.id))
@@ -83,11 +94,18 @@ export function CommentSection({
 
     startTransition(async () => {
       try {
-        await deleteComment(commentId)
+        const response = await fetch(`/api/posts/${postId}/comments/${commentId}`, {
+          method: 'DELETE',
+        })
+
+        if (!response.ok) {
+          throw new Error('Failed to delete comment')
+        }
       } catch {
         // Re-fetch on error to restore state
-        const updatedComments = await getComments(postId)
-        setComments(updatedComments)
+        const refreshResponse = await fetch(`/api/posts/${postId}/comments`)
+        const data = await refreshResponse.json()
+        setComments(data.comments || [])
       }
     })
   }
@@ -99,9 +117,10 @@ export function CommentSection({
     }
   }
 
-  const formatRelativeTime = (date: Date) => {
+  const formatRelativeTime = (dateString: string) => {
     const now = new Date()
-    const diffInSeconds = Math.floor((now.getTime() - new Date(date).getTime()) / 1000)
+    const date = new Date(dateString)
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
 
     if (diffInSeconds < 60) return 'just now'
     if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m`
@@ -134,20 +153,19 @@ export function CommentSection({
       {/* Comments list */}
       <div className="space-y-3 px-4">
         {visibleComments.map((comment) => {
-          const canDelete =
-            currentUserId === comment.userId || currentUserId === postAuthorId
+          const canDelete = currentUserId === comment.userId
 
           return (
             <div key={comment.id} className="flex gap-2">
               <Avatar
-                src={comment.user.avatarUrl}
+                src={comment.user.image}
                 name={comment.user.name}
                 size={32}
               />
               <div className="flex-1">
                 <div className="bg-gray-100 rounded-2xl px-3 py-2 inline-block">
                   <div className="font-semibold text-sm text-gray-900">
-                    {comment.user.name || comment.user.email}
+                    {comment.user.name || 'Anonymous'}
                   </div>
                   <div className="text-sm text-gray-800">{comment.content}</div>
                 </div>
