@@ -146,7 +146,7 @@ export function CommentSection({
               />
               <div className="flex-1">
                 <div className="bg-gray-100 rounded-2xl px-3 py-2 inline-block">
-                  <div className="font-semibold text-sm">
+                  <div className="font-semibold text-sm text-gray-900">
                     {comment.user.name || comment.user.email}
                   </div>
                   <div className="text-sm text-gray-800">{comment.content}</div>

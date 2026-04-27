@@ -16,7 +16,8 @@ export function Avatar({ src, name, size = 40 }: AvatarProps) {
         alt={name || 'User avatar'}
         width={size}
         height={size}
-        className="rounded-full object-cover"
+        className="rounded-full object-cover shrink-0"
+        style={{ width: size, height: size, minWidth: size, minHeight: size }}
       />
     )
   }
@@ -26,8 +27,8 @@ export function Avatar({ src, name, size = 40 }: AvatarProps) {
 
   return (
     <div
-      className="rounded-full flex items-center justify-center text-white font-semibold"
-      style={{ width: size, height: size, backgroundColor: bgColor, fontSize: size / 2.5 }}
+      className="rounded-full flex items-center justify-center text-white font-semibold shrink-0"
+      style={{ width: size, height: size, minWidth: size, minHeight: size, backgroundColor: bgColor, fontSize: size / 2.5 }}
     >
       {initial}
     </div>
