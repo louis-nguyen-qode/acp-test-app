@@ -9,11 +9,13 @@ import { createPost } from '@/actions/posts'
 
 interface PostComposerProps {
   onPostCreated?: () => void
+  currentUserAvatarUrl?: string | null
+  currentUserName?: string | null
 }
 
 type PostType = 'TEXT' | 'IMAGE' | 'STORY'
 
-export function PostComposer({ onPostCreated }: PostComposerProps) {
+export function PostComposer({ onPostCreated, currentUserAvatarUrl, currentUserName }: PostComposerProps) {
   const { data: session } = useSession()
   const [content, setContent] = useState('')
   const [type, setType] = useState<PostType>('TEXT')
@@ -101,9 +103,10 @@ export function PostComposer({ onPostCreated }: PostComposerProps) {
 
       <form onSubmit={handleSubmit}>
         <div className="flex gap-3 mb-3">
+          {/* Avatar source: User.avatarUrl from DB (canonical field), passed server-side to prevent JWT staleness */}
           <Avatar
-            src={session.user.image}
-            name={session.user.name}
+            src={currentUserAvatarUrl ?? session.user.image}
+            name={currentUserName ?? session.user.name}
             size={40}
           />
           <textarea

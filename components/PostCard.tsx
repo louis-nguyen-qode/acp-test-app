@@ -93,6 +93,7 @@ export function PostCard({ post, currentUserId, onDeleted }: PostCardProps) {
       <div className="p-4">
         <div className="flex items-start justify-between">
           <div className="flex gap-3">
+            {/* Avatar source: post.user.avatarUrl (canonical User.avatarUrl field from DB) */}
             <Avatar
               src={post.user.avatarUrl}
               name={post.user.name}
