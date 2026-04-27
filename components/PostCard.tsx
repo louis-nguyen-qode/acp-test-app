@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { Avatar } from '@/components/ui/Avatar'
 import { Button } from '@/components/ui/Button'
 import { CommentSection } from '@/components/CommentSection'
+import { ClientFormattedDate } from '@/components/ClientFormattedDate'
 import { updatePost, deletePost, PostWithRelations } from '@/actions/posts'
 
 interface PostCardProps {
@@ -55,15 +56,6 @@ export function PostCard({ post, currentUserId, onDeleted }: PostCardProps) {
     })
   }
 
-  const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-    })
-  }
-
   const renderMediaGrid = () => {
     if (allMediaUrls.length === 0) return null
 
@@ -110,7 +102,9 @@ export function PostCard({ post, currentUserId, onDeleted }: PostCardProps) {
               <div className="font-semibold text-gray-900">
                 {post.user.name || post.user.email}
               </div>
-              <div className="text-sm text-gray-500">{formatDate(post.createdAt)}</div>
+              <div className="text-sm text-gray-500">
+                <ClientFormattedDate dateString={post.createdAt.toISOString()} />
+              </div>
             </div>
           </div>
 
