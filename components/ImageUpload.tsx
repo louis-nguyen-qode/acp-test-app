@@ -137,7 +137,6 @@ export function ImageUpload({ currentUrl, currentName, onUpload }: ImageUploadPr
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/*"
         onChange={handleFileSelect}
         className="hidden"
         aria-label="Upload profile image"
