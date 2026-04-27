@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
+import { ProfileEditForm } from '@/components/ProfileEditForm'
 
 export const metadata = { title: 'Profile' }
 
@@ -10,7 +11,7 @@ export default async function ProfilePage() {
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { id: true, name: true, email: true, role: true, createdAt: true },
+    select: { id: true, name: true, email: true, role: true, createdAt: true, avatarUrl: true },
   })
 
   if (!user) return null
@@ -26,12 +27,14 @@ export default async function ProfilePage() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-2xl px-4 py-8">
+      <main className="mx-auto max-w-2xl px-4 py-8 space-y-8">
+        <div className="rounded-lg bg-white border border-gray-200 shadow-sm p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Edit Profile</h2>
+          <ProfileEditForm user={user} />
+        </div>
+
         <div className="rounded-lg bg-white border border-gray-200 shadow-sm p-6 space-y-4">
-          <div>
-            <dt className="text-xs font-medium text-gray-500 uppercase tracking-wide">Name</dt>
-            <dd className="mt-1 text-sm text-gray-900">{user.name ?? '—'}</dd>
-          </div>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Account Information</h2>
           <div>
             <dt className="text-xs font-medium text-gray-500 uppercase tracking-wide">Email</dt>
             <dd className="mt-1 text-sm text-gray-900">{user.email}</dd>
