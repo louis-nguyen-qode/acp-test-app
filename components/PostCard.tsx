@@ -223,9 +223,7 @@ export function PostCard({ post, currentUserId, onDeleted }: PostCardProps) {
       {showComments && (
         <CommentSection
           postId={post.id}
-          postAuthorId={post.userId}
-          initialComments={[]}
-          currentUserId={currentUserId}
+          currentUserId={currentUserId || null}
         />
       )}
     </div>
