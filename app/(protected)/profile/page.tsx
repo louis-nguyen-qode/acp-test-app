@@ -29,7 +29,6 @@ export default async function ProfilePage() {
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Edit Profile</h2>
           <ProfileEditForm user={user} />
         </div>
-
         <div className="rounded-lg bg-white border border-gray-200 shadow-sm p-6 space-y-4">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Account Information</h2>
           <div>
