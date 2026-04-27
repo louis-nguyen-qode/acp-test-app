@@ -27,6 +27,12 @@ export default async function DashboardPage() {
             <Link href="/profile" className="text-sm text-gray-600 hover:text-gray-900">
               Profile
             </Link>
+            <Link
+              href="/settings/change-password"
+              className="text-sm text-gray-600 hover:text-gray-900"
+            >
+              Change Password
+            </Link>
             <form
               action={async () => {
                 'use server'
