@@ -5,15 +5,33 @@ import { Avatar } from '@/components/ui/Avatar'
 import { Button } from '@/components/ui/Button'
 import { CommentSection } from '@/components/CommentSection'
 import { ClientFormattedDate } from '@/components/ClientFormattedDate'
-import { updatePost, deletePost, PostWithRelations } from '@/actions/posts'
 
-interface PostCardProps {
-  post: PostWithRelations
-  currentUserId?: string
-  onDeleted?: () => void
+export interface FeedPost {
+  id: string
+  content: string | null
+  createdAt: string  // ISO date string from REST API
+  userId: string
+  user: {
+    id: string
+    name: string | null
+    image: string | null  // avatarUrl mapped to image by API
+  }
+  _count: {
+    comments: number
+    likes?: number
+  }
+  mediaUrls?: string[]
+  mediaUrl?: string | null
+  type?: string
 }
 
-export function PostCard({ post, currentUserId, onDeleted }: PostCardProps) {
+interface PostCardProps {
+  post: FeedPost
+  currentUserId: string | null
+  onDelete: (postId: string) => void
+}
+
+export function PostCard({ post, currentUserId, onDelete }: PostCardProps) {
   const [showComments, setShowComments] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
@@ -24,8 +42,8 @@ export function PostCard({ post, currentUserId, onDeleted }: PostCardProps) {
 
   // Combine mediaUrl (legacy single) with mediaUrls array
   const allMediaUrls = post.mediaUrl
-    ? [post.mediaUrl, ...post.mediaUrls]
-    : post.mediaUrls
+    ? [post.mediaUrl, ...(post.mediaUrls || [])]
+    : (post.mediaUrls || [])
 
   const handleDelete = () => {
     if (!window.confirm('Are you sure you want to delete this post?')) {
@@ -34,8 +52,15 @@ export function PostCard({ post, currentUserId, onDeleted }: PostCardProps) {
 
     startTransition(async () => {
       try {
-        await deletePost(post.id)
-        onDeleted?.()
+        const response = await fetch(`/api/posts/${post.id}`, {
+          method: 'DELETE',
+        })
+
+        if (!response.ok) {
+          throw new Error('Failed to delete post')
+        }
+
+        onDelete(post.id)
       } catch (error) {
         alert(error instanceof Error ? error.message : 'Failed to delete post')
       }
@@ -45,10 +70,21 @@ export function PostCard({ post, currentUserId, onDeleted }: PostCardProps) {
   const handleSaveEdit = () => {
     startTransition(async () => {
       try {
-        await updatePost(post.id, {
-          content: editContent,
-          mediaUrls: allMediaUrls,
+        const response = await fetch(`/api/posts/${post.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            content: editContent,
+            mediaUrls: allMediaUrls,
+          }),
         })
+
+        if (!response.ok) {
+          throw new Error('Failed to update post')
+        }
+
         setIsEditing(false)
       } catch (error) {
         alert(error instanceof Error ? error.message : 'Failed to update post')
@@ -93,18 +129,18 @@ export function PostCard({ post, currentUserId, onDeleted }: PostCardProps) {
       <div className="p-4">
         <div className="flex items-start justify-between">
           <div className="flex gap-3">
-            {/* Avatar source: post.user.avatarUrl (canonical User.avatarUrl field from DB) */}
+            {/* Avatar source: post.user.image (mapped from avatarUrl by REST API) */}
             <Avatar
-              src={post.user.avatarUrl}
+              src={post.user.image}
               name={post.user.name}
               size={40}
             />
             <div>
               <div className="font-semibold text-gray-900">
-                {post.user.name || post.user.email}
+                {post.user.name || 'Anonymous'}
               </div>
               <div className="text-sm text-gray-500">
-                <ClientFormattedDate dateString={post.createdAt.toISOString()} />
+                <ClientFormattedDate dateString={post.createdAt} />
               </div>
             </div>
           </div>
@@ -198,7 +234,7 @@ export function PostCard({ post, currentUserId, onDeleted }: PostCardProps) {
             disabled
           >
             <span>👍</span>
-            <span>{post._count.likes > 0 ? post._count.likes : 'Like'}</span>
+            <span>{post._count.likes && post._count.likes > 0 ? post._count.likes : 'Like'}</span>
           </button>
 
           <button
@@ -225,7 +261,7 @@ export function PostCard({ post, currentUserId, onDeleted }: PostCardProps) {
           postId={post.id}
           postAuthorId={post.userId}
           initialComments={[]}
-          currentUserId={currentUserId}
+          currentUserId={currentUserId ?? undefined}
         />
       )}
     </div>
