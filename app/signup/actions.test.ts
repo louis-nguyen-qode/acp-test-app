@@ -72,6 +72,7 @@ describe('signup', () => {
       email: 'jane@example.com',
       password: 'hash',
       name: 'Jane',
+      avatarUrl: null,
       role: 'user',
       createdAt: new Date(),
     })
@@ -91,6 +92,29 @@ describe('signup', () => {
     if (!result.success) {
       expect(result.error).toContain('Failed to create')
     }
+  })
+
+  it('returns error when signIn throws AuthError', async () => {
+    mockFindUnique.mockResolvedValue(null)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockCreate.mockResolvedValue({} as any)
+    const { AuthError } = await import('next-auth')
+    mockSignIn.mockRejectedValue(new AuthError('Credentials sign in failed'))
+    const result = await signup({ name: 'Jane', email: 'jane@example.com', password: 'password123' })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error).toContain('sign-in failed')
+    }
+  })
+
+  it('rethrows non-AuthError from signIn', async () => {
+    mockFindUnique.mockResolvedValue(null)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockCreate.mockResolvedValue({} as any)
+    mockSignIn.mockRejectedValue(new Error('Network failure'))
+    await expect(
+      signup({ name: 'Jane', email: 'jane@example.com', password: 'password123' })
+    ).rejects.toThrow('Network failure')
   })
 
   it('creates user and redirects on success', async () => {

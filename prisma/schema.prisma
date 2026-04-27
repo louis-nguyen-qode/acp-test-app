@@ -15,23 +15,59 @@ model User {
   email     String   @unique
   password  String
   name      String?
+  avatarUrl String?
   role      String   @default("user")
   createdAt DateTime @default(now())
 
-  todos     Todo[]
+  posts     Post[]
+  comments  Comment[]
+  likes     Like[]
 
   @@map("users")
 }
 
-model Todo {
+model Post {
+  id        String    @id @default(cuid())
+  content   String?
+  type      String    @default("text")
+  mediaUrl  String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  comments  Comment[]
+  likes     Like[]
+
+  @@map("posts")
+}
+
+model Comment {
   id        String   @id @default(cuid())
-  title     String
-  completed Boolean  @default(false)
+  content   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("todos")
+  @@map("comments")
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+  @@map("likes")
 }
