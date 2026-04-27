@@ -110,7 +110,7 @@ export function PostComposer({ onPostCreated }: PostComposerProps) {
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="What's on your mind?"
-            className="flex-1 resize-none border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[60px]"
+            className="flex-1 resize-none border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[60px] text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
             disabled={isPending || uploading}
           />
         </div>

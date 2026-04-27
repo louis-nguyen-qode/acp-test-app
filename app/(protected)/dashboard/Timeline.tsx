@@ -187,7 +187,7 @@ function PostCard({ post, currentUserId }: { post: PostData; currentUserId: stri
               onChange={(e) => setCommentText(e.target.value)}
               placeholder="Write a comment…"
               disabled={isPending}
-              className="flex-1 rounded-full border border-gray-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50"
+              className="flex-1 rounded-full border border-gray-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
             />
             <button
               type="submit"

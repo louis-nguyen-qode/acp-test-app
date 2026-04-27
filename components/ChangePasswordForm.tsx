@@ -97,7 +97,7 @@ export function ChangePasswordForm() {
             required
             autoComplete="current-password"
             disabled={status === 'loading'}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
             placeholder="Your current password"
           />
         </div>
@@ -115,7 +115,7 @@ export function ChangePasswordForm() {
             required
             autoComplete="new-password"
             disabled={status === 'loading'}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
             placeholder="At least 8 characters"
           />
         </div>
@@ -136,7 +136,7 @@ export function ChangePasswordForm() {
             required
             autoComplete="new-password"
             disabled={status === 'loading'}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
             placeholder="Repeat your new password"
           />
           {clientError && <p className="mt-1 text-xs text-red-600">{clientError}</p>}

@@ -191,7 +191,7 @@ export function CommentSection({
               onChange={(e) => setNewComment(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Write a comment..."
-              className="flex-1 border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1 border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
               disabled={isPending}
             />
             <Button
