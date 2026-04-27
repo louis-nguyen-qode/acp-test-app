@@ -10,38 +10,41 @@ export default async function ProfilePage() {
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { id: true, name: true, email: true, role: true, createdAt: true },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      createdAt: true,
+      _count: { select: { todos: true } },
+    },
   })
 
   if (!user) return null
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200 shadow-sm">
-        <div className="mx-auto max-w-2xl px-4 py-4 flex items-center gap-4">
-          <Link href="/dashboard" className="text-sm text-gray-600 hover:text-gray-900">
-            ← Back to dashboard
-          </Link>
-          <h1 className="text-xl font-semibold text-gray-900">Profile</h1>
-        </div>
-      </header>
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold text-gray-900">Your Profile</h1>
 
-      <main className="mx-auto max-w-2xl px-4 py-8">
-        <div className="rounded-lg bg-white border border-gray-200 shadow-sm p-6 space-y-4">
+      <div className="rounded-lg bg-white border border-gray-200 shadow-sm p-6">
+        <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <dt className="text-xs font-medium text-gray-500 uppercase tracking-wide">Name</dt>
+            <dt className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+              Name
+            </dt>
             <dd className="mt-1 text-sm text-gray-900">{user.name ?? '—'}</dd>
           </div>
+
           <div>
-            <dt className="text-xs font-medium text-gray-500 uppercase tracking-wide">Email</dt>
+            <dt className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+              Email
+            </dt>
             <dd className="mt-1 text-sm text-gray-900">{user.email}</dd>
           </div>
+
           <div>
-            <dt className="text-xs font-medium text-gray-500 uppercase tracking-wide">Role</dt>
-            <dd className="mt-1 text-sm text-gray-900 capitalize">{user.role}</dd>
-          </div>
-          <div>
-            <dt className="text-xs font-medium text-gray-500 uppercase tracking-wide">Member since</dt>
+            <dt className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+              Member since
+            </dt>
             <dd className="mt-1 text-sm text-gray-900">
               {user.createdAt.toLocaleDateString('en-US', {
                 year: 'numeric',
@@ -50,8 +53,24 @@ export default async function ProfilePage() {
               })}
             </dd>
           </div>
-        </div>
-      </main>
+
+          <div>
+            <dt className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+              Total todos
+            </dt>
+            <dd className="mt-1 text-sm text-gray-900">{user._count.todos}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div>
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+        >
+          ← Back to Dashboard
+        </Link>
+      </div>
     </div>
   )
 }

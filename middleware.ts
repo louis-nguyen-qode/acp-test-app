@@ -17,7 +17,10 @@ export default auth(function middleware(req) {
     }
   }
 
-  const isOnProtected = nextUrl.pathname.startsWith('/dashboard')
+  const isOnProtected =
+    nextUrl.pathname.startsWith('/dashboard') ||
+    nextUrl.pathname.startsWith('/profile')
+
   if (isOnProtected && !isLoggedIn) {
     const signInUrl = new URL('/signin', nextUrl.origin)
     signInUrl.searchParams.set('callbackUrl', nextUrl.pathname)
