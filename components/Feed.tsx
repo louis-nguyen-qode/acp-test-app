@@ -8,9 +8,11 @@ import { getPosts, PostWithRelations } from '@/actions/posts'
 interface FeedProps {
   initialPosts: PostWithRelations[]
   currentUserId: string
+  currentUserAvatarUrl: string | null
+  currentUserName: string | null
 }
 
-export function Feed({ initialPosts, currentUserId }: FeedProps) {
+export function Feed({ initialPosts, currentUserId, currentUserAvatarUrl, currentUserName }: FeedProps) {
   const [posts, setPosts] = useState<PostWithRelations[]>(initialPosts)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [hasMore, setHasMore] = useState(initialPosts.length === 10)
@@ -86,7 +88,11 @@ export function Feed({ initialPosts, currentUserId }: FeedProps) {
   return (
     <div>
       {/* Post composer */}
-      <PostComposer onPostCreated={handlePostCreated} />
+      <PostComposer
+        onPostCreated={handlePostCreated}
+        currentUserAvatarUrl={currentUserAvatarUrl}
+        currentUserName={currentUserName}
+      />
 
       {/* Posts list */}
       <div>

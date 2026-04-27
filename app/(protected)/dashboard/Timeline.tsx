@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useTransition } from 'react'
+import { Avatar } from '@/components/ui/Avatar'
 import { deletePost, toggleLike, createComment } from './actions'
 
 /** Renders a date in the user's local timezone — deferred to client to avoid SSR/hydration timezone mismatch. */
@@ -113,9 +114,8 @@ function PostCard({ post, currentUserId }: { post: PostData; currentUserId: stri
       {/* Post header */}
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         <div className="flex items-center gap-3">
-          <div className="h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm">
-            {authorName.charAt(0).toUpperCase()}
-          </div>
+          {/* Avatar source: post.user.avatarUrl (canonical User.avatarUrl field from DB) */}
+          <Avatar src={post.user.avatarUrl} name={authorName} size={36} />
           <div>
             <p className="text-sm font-semibold text-gray-900">{authorName}</p>
             <p className="text-xs text-gray-400">
@@ -185,9 +185,7 @@ function PostCard({ post, currentUserId }: { post: PostData; currentUserId: stri
         <div className="px-4 pb-4 space-y-2 border-t border-gray-100 pt-2">
           {post.comments.map((c) => (
             <div key={c.id} className="flex gap-2">
-              <div className="h-7 w-7 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 font-bold text-xs flex-shrink-0">
-                {(c.user.name ?? c.user.email).charAt(0).toUpperCase()}
-              </div>
+              <Avatar src={null} name={c.user.name ?? c.user.email} size={28} />
               <div className="bg-gray-50 rounded-2xl px-3 py-1.5 text-sm flex-1">
                 <span className="font-semibold text-gray-800 mr-1">
                   {c.user.name ?? c.user.email}
