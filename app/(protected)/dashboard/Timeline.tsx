@@ -1,7 +1,29 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useEffect, useTransition } from 'react'
 import { deletePost, toggleLike, createComment } from './actions'
+
+/** Renders a date in the user's local timezone — deferred to client to avoid SSR/hydration timezone mismatch. */
+function FormattedDate({ date }: { date: Date }) {
+  const [formatted, setFormatted] = useState<string | null>(null)
+
+  useEffect(() => {
+    setFormatted(
+      new Date(date).toLocaleDateString(undefined, {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+    )
+  }, [date])
+
+  return (
+    <time dateTime={new Date(date).toISOString()} suppressHydrationWarning>
+      {formatted}
+    </time>
+  )
+}
 
 type CommentData = {
   id: string
@@ -97,12 +119,7 @@ function PostCard({ post, currentUserId }: { post: PostData; currentUserId: stri
           <div>
             <p className="text-sm font-semibold text-gray-900">{authorName}</p>
             <p className="text-xs text-gray-400">
-              {new Date(post.createdAt).toLocaleDateString(undefined, {
-                month: 'short',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
+              <FormattedDate date={post.createdAt} />
             </p>
           </div>
         </div>
