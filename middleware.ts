@@ -17,7 +17,16 @@ export default auth(function middleware(req) {
     }
   }
 
-  const isOnProtected = nextUrl.pathname.startsWith('/dashboard')
+  // Public routes (explicitly allowed without authentication)
+  // - / (newsfeed) is intentionally public for unauthenticated browsing
+  const isOnPublicRoute = nextUrl.pathname === '/'
+
+  // Protected routes requiring authentication
+  const isOnProtected =
+    nextUrl.pathname.startsWith('/dashboard') ||
+    nextUrl.pathname.startsWith('/profile') ||
+    nextUrl.pathname.startsWith('/settings')
+
   if (isOnProtected && !isLoggedIn) {
     const signInUrl = new URL('/signin', nextUrl.origin)
     signInUrl.searchParams.set('callbackUrl', nextUrl.pathname)
