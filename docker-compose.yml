@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=file:/data/prod.db
+      - AUTH_SECRET=${AUTH_SECRET}
+    volumes:
+      - db_data:/data
+
+volumes:
+  db_data:
