@@ -42,6 +42,7 @@ model Post {
   comments  Comment[]
   likes     Like[]
 
+  @@index([createdAt(sort: Desc)])
   @@map("posts")
 }
 
