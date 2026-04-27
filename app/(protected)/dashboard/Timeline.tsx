@@ -151,7 +151,8 @@ function PostCard({ post, currentUserId }: { post: PostData; currentUserId: stri
       </div>
 
       {/* Like / Comment counts */}
-      <div className="px-4 py-1 text-xs text-gray-400 flex gap-3 border-t border-gray-100">
+      {/* text-gray-500 min for WCAG AA on white */}
+      <div className="px-4 py-1 text-xs text-gray-500 flex gap-3 border-t border-gray-100">
         <span>{post._count.likes} {post._count.likes === 1 ? 'like' : 'likes'}</span>
         <button
           onClick={() => setShowComments((s) => !s)}
@@ -167,14 +168,14 @@ function PostCard({ post, currentUserId }: { post: PostData; currentUserId: stri
           onClick={handleLike}
           disabled={isPending}
           className={`text-sm font-medium flex-1 py-1 rounded hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-40 ${
-            isLiked ? 'text-blue-600' : 'text-gray-500'
+            isLiked ? 'text-blue-600' : 'text-gray-600'
           }`}
         >
           {isLiked ? '👍 Liked' : '👍 Like'}
         </button>
         <button
           onClick={() => setShowComments((s) => !s)}
-          className="text-sm font-medium flex-1 py-1 rounded text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="text-sm font-medium flex-1 py-1 rounded text-gray-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-400"
         >
           💬 Comment
         </button>
