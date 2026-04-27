@@ -156,7 +156,7 @@ export function PostCard({ post, currentUserId, onDeleted }: PostCardProps) {
             <textarea
               value={editContent}
               onChange={(e) => setEditContent(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px]"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px] text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
               disabled={isPending}
             />
             <div className="flex gap-2 mt-2">
