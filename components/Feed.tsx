@@ -108,12 +108,12 @@ export function Feed({ initialPosts, currentUserId }: FeedProps) {
           </div>
         )}
         {!hasMore && posts.length > 0 && (
-          <div className="text-center text-gray-500 text-sm">
+          <div className="text-center text-gray-700 text-sm">
             No more posts
           </div>
         )}
         {posts.length === 0 && !isLoadingMore && (
-          <div className="text-center text-gray-500 py-8">
+          <div className="text-center text-gray-700 py-8">
             No posts yet. Be the first to share something!
           </div>
         )}
